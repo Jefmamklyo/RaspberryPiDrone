@@ -1,25 +1,27 @@
 import multiprocessing as mp
+import queue
 import cv2 as cv
 import numpy as np
 import time 
 
 
-def workerLoop(connection, workFunction): #$connection object and funcito object. Latter takes operation data and returns a computed result
+def workerLoop(operationQueue, resultQueue, workFunction): #$connection object and funcito object. Latter takes operation data and returns a computed result
 
     while True:
-        operation = connection.recv()
+        operation = operationQueue.get()
+        
 
-        if operation is None: #posion pill or somehting like that
+        if operation is None: #Sentinental Value 
             break
 
-        result = workFunction(operation)
 
+        try:
+            result = workFunction(operation)
+        except Exception as e:
+            print(f" Frame is not being processeed {e}")
+            pass
 
-
-        connection.send(result)
-
-
-    connection.close()
+        resultQueue.put(result)
 
 
 def basicFilteringPipeline(frame):
@@ -38,40 +40,64 @@ currentFrame = 0
 if __name__ == '__main__':
     cam = cv.VideoCapture(0, cv.CAP_V4L2)
 
-    parentConnection, childConnection = mp.Pipe()
+    #initlisie queses
+    operationQueue = mp.Queue(maxsize=1)
+    resultQueue = mp.Queue(maxsize = 1) #Raises queue.FUll
 
-    process = mp.Process(target = workerLoop, args=(childConnection, basicFilteringPipeline), daemon = True)
+    #args is arguments required in the argument function to be passed in
+    process = mp.Process(target = workerLoop, args=(operationQueue, resultQueue, basicFilteringPipeline), daemon = True)
 
     process.start()
 
 
-    pending = False
-
     while True:
         ret, frame = cam.read()
 
-        parentConnection.send(frame)
-
-        processedFrame = parentConnection.recv()
-
-        #FRAME RATE
-        currentFrame = time.time()
-        fps= 1/ (currentFrame - prevFrame)
-        prevFrame = currentFrame
-
-        cv.putText(img = processedFrame, text = f"fps:{int(fps)}", org=(7,70), fontFace = cv.FONT_HERSHEY_SIMPLEX, fontScale = 3, color = (100, 255, 100), thickness = 2, lineType = cv.LINE_AA)
+        if not ret:
+            break
 
 
+        #try execpt hjandle put and get full. Sends to the worker fucntiuon
+        try: 
+            operationQueue.put_nowait(frame)
+        except queue.Full: 
+            print("Queue ios full raised full exception")
 
-        cv.imshow("Video",processedFrame)
+        #RECIEVES FROM WORKER FUNCTION
+        try:
+            processedFrame = resultQueue.get_nowait()
+
+            #Main
+            currentFrame = time.time()
+            fps= 1/ (currentFrame - prevFrame)
+            prevFrame = currentFrame
+            
+            cv.putText(img = processedFrame, text = f"fps:{int(fps)}", org=(7,70), fontFace = cv.FONT_HERSHEY_SIMPLEX, fontScale = 3, color = (100, 255, 100), thickness = 2, lineType = cv.LINE_AA)
+
+
+            cv.imshow("Frame", processedFrame)
+
+            
+        except queue.Empty:
+            print("Queue is emplty")
+
+        
+        if not process.is_alive:
+            print("Processes isn';t alive will terminate")
+            break
+
 
         if cv.waitKey(1) == ord('l'):
             break
 
 
 
-
-    parentConnection.send(None) #Break the poision pill
+    operationQueue.put(None) #Send sentinental value
     process.join()
     cam.release()
     cv.destroyAllWindows()
+
+operationQueue.put(None) #Send sentinental value
+process.join()
+cam.release()
+cv.destroyAllWindows()
