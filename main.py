@@ -11,7 +11,7 @@ def workerLoop(connection, workFunction): #$connection object and funcito object
         if operation is None: #posion pill or somehting like that
             break
 
-        result = function(operation)
+        result = workFunction(operation)
 
 
 
@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
         processedFrame = parentConnection.recv()
 
-        cv.imShoow("Video",processedFrame)
+        cv.imshow("Video",processedFrame)
 
         if cv.waitKey(1) == ord('l'):
             break
