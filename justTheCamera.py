@@ -11,7 +11,7 @@ def waterShed(frame):
 
     kernal = cv.getStructuringElement(cv.MORPH_ELLIPSE, (5,5))
 
-    _, thresh = cv.threshold(blur, 0,255, cv.THRESH_BINARY_INV + cv.THRESH_OTSU) #binareise iamge
+    _, thresh = cv.threshold(blur, 0,255, cv.THRESH_BINARY + cv.THRESH_OTSU) #binareise iamge
 
     opening = cv.morphologyEx(thresh, cv.MORPH_OPEN, kernal, iterations =2)
 
@@ -21,7 +21,7 @@ def waterShed(frame):
     _, sureFg = cv.threshold(distTransform, 0.4*distTransform.max(),255,0)
     sureFg = np.uint8(sureFg)
 
-    unknown = cv.subtract(sureFg, sureBg)
+    unknown = cv.subtract(sureBg, sureFg)
 
     #lkabeling markers
     _, markers = cv.connectedComponents(sureFg)
@@ -33,7 +33,14 @@ def waterShed(frame):
 
 
     #markS BOUNDR REGION WITH RED
-    frame[markers==-1] = [255,0,0]
+
+    regionAmount= markers.max()
+    rng = np.random.default_rng(42)
+    overlay = frame.copy()
+    for label in range(2, regionAmount + 1):
+        overlay[markers == label] = rng.integers(60, 255,size=3).tolist()
+    boundry = cv.addWeighted(frame, 0.5, overlay, 0.5,0)
+    boundry[markers == -1] = [0.25,255]
 
 
     return frame
