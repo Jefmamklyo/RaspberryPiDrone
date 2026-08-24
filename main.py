@@ -21,6 +21,11 @@ def workerLoop(operationQueue, resultQueue, workFunction): #$connection object a
             print(f" Frame is not being processeed {e}")
             pass
 
+        try:
+            resultQueue.get_nowait()
+        except queue.Empty:
+            pass
+
         resultQueue.put(result)
 
 
