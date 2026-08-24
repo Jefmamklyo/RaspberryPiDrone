@@ -23,6 +23,11 @@ def waterShed(frame):
 
     unknown = cv.subtract(sureFg, sureBg)
 
+    #lkabeling markers
+    _, markers = cv.connectedComponents(sureFg)
+    markers = markers +1
+    markers[unknown = 255] = 0
+    markers = cv.watershed(frame.copy(), markers)
 
 
     return sureBg
