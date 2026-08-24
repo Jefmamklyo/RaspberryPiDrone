@@ -26,11 +26,17 @@ def waterShed(frame):
     #lkabeling markers
     _, markers = cv.connectedComponents(sureFg)
     markers = markers +1
-    markers[unknown = 255] = 0
-    markers = cv.watershed(frame.copy(), markers)
+    markers[unknown == 255] = 0
 
 
-    return sureBg
+    markers = cv.watershed(frame, markers)
+
+
+    #markS BOUNDR REGION WITH RED
+    frame[markers==-1] = [255,0,0]
+
+
+    return frame
 
 cam = cv.VideoCapture(0, cv.CAP_V4L2)
 cam.set(cv.CAP_PROP_FRAME_WIDTH, 320)
@@ -56,7 +62,9 @@ while True:
 
     cv.putText(img = processedFrame, text = f"fps:{int(fps)}", org=(7,70), fontFace = cv.FONT_HERSHEY_SIMPLEX, fontScale = 3, color = (100, 255, 100), thickness = 2, lineType = cv.LINE_AA)
 
+
     cv.imshow("frame", processedFrame)
+
 
     exitKey= cv.waitKey(1)
     idle = "F"
