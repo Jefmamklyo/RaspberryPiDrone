@@ -29,7 +29,8 @@ def orbBenchMark(img, **kwarg):
 
 #grab image from 1 frame |||||| TEMPORARY WIFI {PROBLEMS CAN'T DOWNLAOD IAMGES PLEASE MAKE THIS AN IAMGEW} ||
 
-cam = cv.VideoCapture(0, cv.CAP_V4L2)
+cam = cv.VideoCapture(1, cv.CAP_V4L2)
+
 ret, frame = cam.read()
 if not ret: #null chaining
     print("Can't get camera")
@@ -40,20 +41,20 @@ gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY) #Rrequires graysacale
 cv.imshow("img1",gray)
 
 #harrisCount
-print("Harriscount")
+print("HARRIS")
 harrisKeypoiny, harrisTime, harrisMemory, harrisImg = orbBenchMark(gray, scoreType= cv.ORB_HARRIS_SCORE)
 cv.imshow("harrisImage", harrisImg)
 
 
 #fast count
-print("Fast")
+print("FAST")
 
 fastKeypoint, fastTime, fastMemory, fastImg = orbBenchMark(gray, scoreType = cv.ORB_FAST_SCORE)
 cv.imshow("fastImage", fastImg)
 
 
 #wta=2
-print("2WTA2")
+print("3WTA3")
 
 wta2Keypoints, wta2Time, wta2Memory, wta2Img = orbBenchMark(gray, WTA_K = 2)
 cv.imshow("wta2img", wta2Img)
@@ -61,7 +62,7 @@ cv.imshow("wta2img", wta2Img)
 
 
 #Wta=3
-print("3WTA3")
+print("2WTA2")
 
 wta3Keypoints, wta3Time, wta3Memory, wta3Img = orbBenchMark(gray, WTA_K = 3)
 cv.imshow("wta3img", wta3Img)
