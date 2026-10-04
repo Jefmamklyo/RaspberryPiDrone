@@ -63,7 +63,7 @@ cv.imshow("wta2img", wta2Img)
 
 #Wta=3
 print("2WTA2")
-
+ 
 wta3Keypoints, wta3Time, wta3Memory, wta3Img = orbBenchMark(gray, WTA_K = 3)
 cv.imshow("wta3img", wta3Img)
 

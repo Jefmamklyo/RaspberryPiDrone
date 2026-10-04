@@ -38,8 +38,8 @@ def waterShed(frame):
 
     return frame
 
-cam = cv.VideoCapture(0, cv.CAP_V4L2)
-cam.set(cv.CAP_PROP_FRAME_WIDTH, 320)
+cam = cv.VideoCapture(1, cv.CAP_V4L2)
+cam.set(cv.CAP_PROP_FRAME_WIDTH, 640)
 cam.set(cv.CAP_PROP_FRAME_HEIGHT, 320)
 currentFrame = 0
 prevFrame = 0
@@ -56,11 +56,7 @@ while True:
         break
 
     processedFrame = waterShed(frame)
-    currentFrame = time.time()
-    fps= 1/ (currentFrame - prevFrame)
-    prevFrame = currentFrame
-
-    cv.putText(img = processedFrame, text = f"fps:{int(fps)}", org=(7,70), fontFace = cv.FONT_HERSHEY_SIMPLEX, fontScale = 3, color = (100, 255, 100), thickness = 2, lineType = cv.LINE_AA)
+   
 
 
     cv.imshow("frame", processedFrame)
