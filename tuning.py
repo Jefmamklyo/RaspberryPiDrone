@@ -44,7 +44,8 @@ while True:
 
         key = cv.waitKey(1) & 0xFF
 
-        if key == ord(' ') and found:
+        if key == ord('k') and found:
+            print("Took Picture")
             objects.append(objP.copy())
             images.append(corners)
 
@@ -56,7 +57,12 @@ while True:
 cam1.release()
 cv.destroyAllWindows()
 
+if len(objects) < 10:
+     raise RuntimeError("Capture at least 10 images.")
+
 size = gray.shape[::-1]
+
+
 
 ret, K, D, rvecs, tvecs = cv.calibrateCamera(objects, images, size, None, None)
 

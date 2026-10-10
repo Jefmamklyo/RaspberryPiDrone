@@ -38,7 +38,7 @@ prevFrame = 0
 currentFrame = 0
 
 if __name__ == '__main__':
-    cam = cv.VideoCapture(1, cv.CAP_V4L2)
+    cam = cv.VideoCapture(0, cv.CAP_V4L2)
 
     #initlisie queses
     operationQueue = mp.Queue(maxsize=1)
@@ -55,7 +55,6 @@ if __name__ == '__main__':
 
         if not ret:
             break
-
 
         #try execpt hjandle put and get full. Sends to the worker fucntiuon
         try: 
