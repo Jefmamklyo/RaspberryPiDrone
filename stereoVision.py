@@ -82,9 +82,9 @@ while True:
         colourMap = RGBHeightmap(heightMap, validMask)
 
 
-        coverage = 100 * validMask.sum()/validMask.size
+        depthCoverage = 100 * validMask.sum()/validMask.size
 
-        cv.putText(colourMap, f"Depthcoverage: {coverage:.1f}", (7,30), cv.FONT_HERSHEY_SIMPLEX, 0.7, (255,255,255), 2)
+        cv.putText(colourMap, f"Depthcoverage: {depthCoverage:.1f}", (7,30), cv.FONT_HERSHEY_SIMPLEX, 0.7, (255,255,255), 2)
 
         
 
