@@ -83,26 +83,6 @@ bf = cv.BFMatcher(cv.NORM_HAMMING, crossCheck = True)
 
 
 
-plt.acorr
-fig = plt.figure(figsize=(10,7))
-
-ax = fig.add_subplot(111,projection="3d")
-
-ax.set_title("LIVE ")
-
-ax.set_xlabel("X ")
-
-
-ax.set_ylabel("Y")
-
-ax.set_zlabel("Z")
-
-
-ax.set_xlim(-2,2)
-
-ax.set_ylim(-2,2)
-
-ax.set_zlim(0,5)
 while True:
 
 
