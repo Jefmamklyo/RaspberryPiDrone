@@ -93,7 +93,7 @@ while True:
     #step counter for optimisation
     frameNumber += 1
 
-    if frameNumber % step == 1:
+    if frameNumber % step == 0:
         continue
 
 
